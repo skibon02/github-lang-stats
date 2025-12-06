@@ -131,4 +131,6 @@ Or in HTML:
 
 ## License
 
-This is a minimal wrapper around [github-readme-stats](https://github.com/anuraghazra/github-readme-stats). All credit goes to the original authors.
+MIT License - see LICENSE file for details.
+
+This project includes code from [github-readme-stats](https://github.com/anuraghazra/github-readme-stats) by Anurag Hazra, also licensed under MIT.

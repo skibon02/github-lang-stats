@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
+import topLangsHandler from "./api/top-langs.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -10,19 +11,6 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-const GITHUB_STATS_PATH = process.env.GITHUB_STATS_PATH || "/home/skygrel19/packages/github-readme-stats";
-
-let topLangsHandler;
-
-try {
-  const module = await import(`${GITHUB_STATS_PATH}/api/top-langs.js`);
-  topLangsHandler = module.default;
-  console.log("✓ Loaded top-langs handler from:", GITHUB_STATS_PATH);
-} catch (err) {
-  console.error("✗ Failed to load top-langs handler:", err.message);
-  process.exit(1);
-}
 
 app.get("/", (req, res) => {
   res.send(`
