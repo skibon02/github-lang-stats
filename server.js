@@ -2,7 +2,6 @@ import express from "express";
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
-import topLangsHandler from "./api/top-langs.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -16,6 +15,9 @@ try {
 }
 
 process.env.PORT = process.env.PORT || '3000';
+
+const topLangsModule = await import("./api/top-langs.js");
+const topLangsHandler = topLangsModule.default;
 
 const app = express();
 const PORT = parseInt(process.env.PORT || '3000');
