@@ -1,5 +1,5 @@
 import express from "express";
-import dotenv from "dotenv";
+import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import topLangsHandler from "./api/top-langs.js";
@@ -7,12 +7,22 @@ import topLangsHandler from "./api/top-langs.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-dotenv.config();
+try {
+  const token = readFileSync(join(__dirname, 'github-token.txt'), 'utf-8').trim();
+  process.env.PAT_1 = token;
+  console.log('✓ Loaded GitHub token from github-token.txt');
+} catch (err) {
+  console.warn('⚠ Could not load github-token.txt:', err.message);
+}
+
+process.env.PORT = process.env.PORT || '3000';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = parseInt(process.env.PORT || '3000');
+const HOST = process.env.HOST || 'localhost';
 
 app.get("/", (req, res) => {
+  const baseUrl = `http://${HOST}:${PORT}`;
   res.send(`
     <html>
       <head>
@@ -31,7 +41,7 @@ app.get("/", (req, res) => {
         <p>Server is running! Use the <code>/top-langs</code> endpoint to get language stats.</p>
 
         <h2>Usage</h2>
-        <pre>http://localhost:${PORT}/top-langs?username=YOUR_GITHUB_USERNAME</pre>
+        <pre>${baseUrl}/top-langs?username=YOUR_GITHUB_USERNAME</pre>
 
         <h2>Available Parameters</h2>
         <ul>
@@ -51,19 +61,19 @@ app.get("/", (req, res) => {
         <h2>Examples</h2>
         <div class="example">
           <h3>Normal Layout</h3>
-          <pre>http://localhost:${PORT}/top-langs?username=anuraghazra</pre>
+          <pre>${baseUrl}/top-langs?username=anuraghazra</pre>
           <img src="/top-langs?username=anuraghazra" alt="Normal layout example" />
         </div>
 
         <div class="example">
           <h3>Donut Layout</h3>
-          <pre>http://localhost:${PORT}/top-langs?username=anuraghazra&layout=donut</pre>
+          <pre>${baseUrl}/top-langs?username=anuraghazra&layout=donut</pre>
           <img src="/top-langs?username=anuraghazra&layout=donut" alt="Donut layout example" />
         </div>
 
         <div class="example">
           <h3>Compact Layout with Theme</h3>
-          <pre>http://localhost:${PORT}/top-langs?username=anuraghazra&layout=compact&theme=dark</pre>
+          <pre>${baseUrl}/top-langs?username=anuraghazra&layout=compact&theme=dark</pre>
           <img src="/top-langs?username=anuraghazra&layout=compact&theme=dark" alt="Compact layout example" />
         </div>
       </body>
@@ -78,10 +88,10 @@ app.listen(PORT, () => {
 ╔═══════════════════════════════════════════════╗
 ║  GitHub Stats Server is running!              ║
 ║                                               ║
-║  URL: http://localhost:${PORT}                   ║
+║  URL: http://${HOST}:${PORT}
 ║                                               ║
 ║  Example:                                     ║
-║  http://localhost:${PORT}/top-langs?username=anuraghazra
+║  http://${HOST}:${PORT}/top-langs?username=anuraghazra
 ║                                               ║
 ╚═══════════════════════════════════════════════╝
   `);

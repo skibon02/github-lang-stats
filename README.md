@@ -14,15 +14,18 @@ A minimal Node.js server that serves GitHub top-langs cards using the github-rea
 npm install
 ```
 
-2. Create a `.env` file from the example:
+2. Create a token file:
 ```bash
-cp .env.example .env
+echo "ghp_your_token_here" > github-token.txt
+chmod 600 github-token.txt
 ```
 
-3. Edit `.env` and add your GitHub Personal Access Token:
-```
-PAT_1=ghp_your_token_here
-PORT=3000
+3. (Optional) Configure host/port in `.env` file:
+```bash
+cp .env.example .env
+# Edit .env to change HOST/PORT if needed
+# HOST=your-domain.com (default: localhost)
+# PORT=3000 (default: 3000)
 ```
 
 ### How to get a GitHub Personal Access Token
