@@ -7,14 +7,24 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 try {
-  const token = readFileSync(join(__dirname, 'github-token.txt'), 'utf-8').trim();
-  process.env.PAT_1 = token;
-  console.log('✓ Loaded GitHub token from github-token.txt');
+  const envContent = readFileSync(join(__dirname, '.env'), 'utf-8');
+  envContent.split('\n').forEach(line => {
+    const trimmed = line.trim();
+    if (trimmed && !trimmed.startsWith('#')) {
+      const [key, ...valueParts] = trimmed.split('=');
+      if (key && valueParts.length > 0) {
+        const envKey = key.trim();
+        const envValue = valueParts.join('=').trim();
+        if (!process.env[envKey]) {
+          process.env[envKey] = envValue;
+        }
+      }
+    }
+  });
+  console.log('✓ Loaded .env file');
 } catch (err) {
-  console.warn('⚠ Could not load github-token.txt:', err.message);
+  console.warn('⚠ Could not load .env file:', err.message);
 }
-
-process.env.PORT = process.env.PORT || '3000';
 
 const topLangsModule = await import("./api/top-langs.js");
 const topLangsHandler = topLangsModule.default;
